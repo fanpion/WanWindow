@@ -1,0 +1,7 @@
+2023.10.08
+问题描述:
+初次尝试建立springboot项目, 但是无端以下报错,
+org.codehaus.plexus.component.repository.exception.ComponentLookupException: com.google.inject.ProvisionException: Unable to provision, see the following errors:
+
+解决方式:使用了版本更低的Maven版本
+根本原因:Idea和maven版本不支持, idea不能支持较高版本的Maven

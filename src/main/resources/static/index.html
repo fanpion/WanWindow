@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="./js/jquery.js"></script>
+    <script type="text/javascript" src="./js/echarts.js"></script>
+</head>
+<body>
+<p>每日记录价格:</p>
+<form>
+    <input type = "text" value="" id="outCookie">
+    <input type="button" value="Submit" id="inputPrice">
+    <span id="inputResult"></span>
+</form>
+<!--<p>getGoodTradeData:</p>-->
+<!--<form>-->
+<!--    <input type = "text" value="3980" name="itemIndex" id="itemIndex">-->
+<!--    <input type = "text" value="2023-08-07" name="dt" id="dt">-->
+<!--    <input type="button" value="Submit" id="getByIndex">-->
+<!--</form>-->
+<!--<div id="getGoodTradeDataChart" style="width: 600px;height:400px;"></div>-->
+
+<p>通称:</p>
+<div>
+    <input type = "text" value="蓝兔盒子" name="txtGenCall" id="txtGenCall">
+    <input type="button" value="Submit" id="btnGetGenCall">
+    <div>
+        <select id="selGenCall"></select>
+    </div>
+</div>
+
+
+<p>选择时间段:</p>
+<form>
+<!--    <input type = "text" value="蓝兔盒子"  name="wpmc" id="wpmc">-->
+    <input type = "text" value="2023-10-07" name="fromDate" id="fromDate">
+    <input type = "text" value="2023-10-16" name="toDate" id="toDate">
+    <input type="button" value="Submit" id="getByWpmc">
+</form>
+<!--<div id="avgPriceGetByWpmcChart" style="width: 600px;height:400px;"></div>-->
+<!--<div id="avgPrice30GetByWpmcChart" style="width: 600px;height:400px;"></div>-->
+<!--<div id="sellCnt30GetByWpmcChart" style="width: 600px;height:400px;"></div>-->
+<!--<div id="followHeat30GetByWpmcChart" style="width: 600px;height:400px;"></div>-->
+<div id="combinePriceByWpmcChart" style="width: 600px;height:400px;"></div>
+
+</body>
+<script type=text/javascript>
+    $(function() {
+        Date.prototype.Format = function (fmt) { //author: meizz
+            const o = {
+                "M+": this.getMonth() + 1, //月份
+                "d+": this.getDate(), //日
+                "H+": this.getHours(), //小时
+                "m+": this.getMinutes(), //分
+                "s+": this.getSeconds(), //秒
+                "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                "S": this.getMilliseconds() //毫秒
+            };
+            if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            for (var k in o)
+                if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            return fmt;
+        }
+
+        const toDate = new Date().Format("yyyy-MM-dd");
+        const fromDate = new Date(new Date().setMonth(new Date().getMonth() - 1)).Format("yyyy-MM-dd");
+
+
+        $('#toDate').val(toDate)
+        $('#fromDate').val(fromDate)
+
+        $('#inputPrice').click(
+            function () {
+                if ('' == $('#outCookie').val()) return;
+                $.ajax({
+                    type: "post",
+                    url: "/wanbaodaily/getGoodsTrade",
+                    data: {
+                        cookie: $('#outCookie').val(),
+                    },
+                    success: function (data) {
+                        $('#inputResult').val(data);
+                    }
+                })
+            }
+        );
+
+        $('#btnGetGenCall').click(
+            function () {
+                $('#selGenCall option').remove();
+                $.ajax({
+                    type: "post",
+                    url: "/querygoods/getQcNameByWpmc",
+                    data: {
+                        wpmc: $('#txtGenCall').val()
+                    },
+                    success: function (data) {
+                        if (data.length == 0) return;
+                        $.each(data, function (k, v){
+                            $('#selGenCall').append('<option value="' + v.gfmc + '">' + v.wpqc + '</option>')
+                        })
+                    }
+                })
+
+
+            }
+        );
+
+        $('#getByIndex').click(
+            function () {
+                $.ajax({
+                    type: "post",
+                    url: "/querygoods/getRecentlyPrice",
+                    data: {
+                        itemIndex: $('#itemIndex').val(),
+                        dt:$('#dt').val()
+                    },
+                    success: function (data) {
+
+                        let dates = [];
+                        let prices = [];
+
+                        $.each(data, function (index, item) {
+                            dates.push(item.dt);
+                            prices.push(item.avgPrice);
+                        })
+                        renderChart('getGoodTradeDataChart', '物品价格', dates, prices);
+                    }
+                })
+            }
+        );
+
+        $('#getByWpmc').click(
+            function () {
+                $.ajax({
+                    type: "post",
+                    url: "/querygoods/getAvgPriceByGfmc",
+                    data: {
+                        gfmc: $('#selGenCall').val(),
+                        fromDate:$('#fromDate').val(),
+                        toDate:$('#toDate').val()
+                    },
+                    success: function (data) {
+
+                        let dates = [];
+                        let prices = [];
+
+                        let avgPrice30 = [];
+                        let sellCnt30 = [];
+                        let followHeat30 = [];
+                        $.each(data, function (index, item) {
+                            dates.push(item.dt);
+                            prices.push(item.avgPrice/100);
+                            avgPrice30.push(item.avgPrice30/100)
+                            sellCnt30.push(item.sellCnt30)
+                            followHeat30.push(item.followHeat30)
+                        })
+                        // renderChart('avgPriceGetByWpmcChart', '物品当日平均价格', dates, prices);
+                        // renderChart('avgPrice30GetByWpmcChart', '物品平均价格(30天)', dates, avgPrice30);
+                        // renderChart('sellCnt30GetByWpmcChart', '物品交易热度', dates, sellCnt30);
+                        // renderChart('followHeat30GetByWpmcChart', '物品热度(30天)', dates, followHeat30);
+
+                        // formatavgPriceGetByWpmcChart
+                        let dataInfoArr = {
+                            titleText : '', //'物品当日及30天内平均价格',
+                            xAxisData : dates,
+                            combineInfo : [
+                                {
+                                    legendData:'物品当日平均价格',
+                                    seriesData:prices
+                                },
+                                {
+                                    legendData:'物品平均价格(30天)',
+                                    seriesData:avgPrice30
+                                },
+                                {
+                                    legendData:'物品交易热度',
+                                    seriesData:sellCnt30
+                                },
+                                {
+                                    legendData:'物品热度(30天)',
+                                    seriesData:followHeat30
+                                }
+
+                            ]
+                        }
+                        transfer2MutilChart('combinePriceByWpmcChart', dataInfoArr)
+                    }
+                })
+            }
+        );
+
+        function templateChart(dataInfoArr){
+            let fromColor = '#fff';
+            let charColorDin = ['#d57d7d', '#4fbac4', '#78d28d', '#e8c67f'];
+
+            let singleChart = {
+                title: {
+                    text: dataInfoArr.titleText
+                },
+                legend:{
+                    //orient: 'vertical',
+                    //top: 'center'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: dataInfoArr.xAxisData
+                },
+                yAxis: {},
+            }
+            let combineChart = []
+            $.each(dataInfoArr.combineInfo, function (index, item) {
+                combineChart.push({
+                    legend: {
+                        data: item.legendData
+                    },
+                    visualMap: {
+                        show: false,
+                        type: 'continuous',
+                        seriesIndex: index,
+                        min: 0,
+                        max: Math.max.apply(null, item.seriesData),
+                        color: [charColorDin[index], fromColor]
+                    },
+                    series:{
+                        name: item.legendData,
+                        type: 'line',
+                        data: item.seriesData,
+                        areaStyle: {},
+                        showSymbol: false,
+                        smooth: true,
+                        itemStyle: {
+                            color: charColorDin[index]
+                        }
+                    }
+                })
+            })
+            return [singleChart, combineChart]
+        }
+
+        function transfer2MutilChart(componentId, dataInfoArr) {
+            let chars = templateChart(dataInfoArr);
+            let singleChart = chars[0], combineChart = chars[1];
+            let visualMap = [];
+            let series = [];
+            let legendData = []
+            $.each(combineChart, function (index, item){
+                visualMap.push(item.visualMap)
+                series.push(item.series)
+                legendData.push(item.legend.data)
+            })
+            singleChart.visualMap = visualMap;
+            singleChart.series = series;
+            singleChart.legend.data = legendData;
+            chartToTarget(componentId, singleChart)
+            return singleChart;
+        }
+
+        function chartToTarget(componentId, option) {
+            const myChart = echarts.init(document.getElementById(componentId));
+            myChart.setOption(option);
+        }
+
+        function renderChart(componentId, title, dates, data) {
+            const myChart = echarts.init(document.getElementById(componentId));
+
+            // 指定图表的配置项和数据
+            const option = {
+                title: {
+                    text: title
+                },
+                visualMap: [
+                    {
+                        show: false,
+                        type: 'continuous',
+                        seriesIndex: 0,
+                        min: 0,
+                        max: Math.max.apply(null, data)
+                    },
+                ],
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data: ['价格']
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: dates
+                },
+                yAxis: {},
+                series: [
+                    {
+                        name: '价格',
+                        type: 'line',
+                        data: data,
+                        areaStyle: {},
+                        showSymbol: false,
+                        smooth: true
+                    }
+                ]
+            };
+            myChart.setOption(option);
+        }
+    });
+
+</script>
+</html>

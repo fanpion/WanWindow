@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!--configuration核心配置文件-->
+<configuration>
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql://1.12.49.42:3306/wanbaolouspider?autoReconnect=true"/>
+                <property name="username" value="root"/>
+                <property name="password" value="GAOmysql0104?"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers>
+        <package name="com.gao.dao"/>
+    </mappers>
+</configuration>
