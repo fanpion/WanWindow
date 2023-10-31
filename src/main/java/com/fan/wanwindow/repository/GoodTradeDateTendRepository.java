@@ -1,6 +1,7 @@
 package com.fan.wanwindow.repository;
 
 import com.fan.wanwindow.dto.GoodTradeDataTendDTO;
+import com.fan.wanwindow.dto.GoodTradeSellHotDTO;
 import com.fan.wanwindow.entity.GoodTradeData;
 import com.fan.wanwindow.entity.id.GoodTradeDataPK;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -29,4 +30,23 @@ public interface GoodTradeDateTendRepository extends JpaRepository<GoodTradeData
             "where a.info = ?1 and b.dt >= ?2 and b.dt <= ?3 " +
             "order by b.dt")
     List<GoodTradeDataTendDTO> getGoodTradeDataByGfmc(String gfmc, String fromDate, String toDate);
+
+    @Query(value = "select new com.fan.wanwindow.dto.GoodTradeSellHotDTO(a.info,b.sellCnt30,b.avgPrice,c.wpmc) " +
+            "from good_index_info_rel a  " +
+            "INNER JOIN good_trade_data b " +
+            "on a.itemIndex = b.itemIndex  " +
+            "left join good_info_mc c on a.info = c.gfmc " +
+            "where b.dt = (select max(dt) from good_trade_data) and b.sellCnt30 +0 > ?1 " +
+            "order by b.sellCnt30+0 desc")
+    List<GoodTradeSellHotDTO> getGoodTradeDataBySellHot(int sellCnt30);
+
+    @Query(value = "select new com.fan.wanwindow.dto.GoodTradeSellHotDTO(a.info,b.sellCnt30,b.avgPrice,c.wpmc) " +
+            "from good_index_info_rel a  " +
+            "INNER JOIN good_trade_data b " +
+            "on a.itemIndex = b.itemIndex  " +
+            "left join good_info_mc c on a.info = c.gfmc " +
+            "where b.dt = (select max(dt) from good_trade_data) " +
+            "order by b.sellCnt30+0 desc " +
+            "limit ?1 ")
+    List<GoodTradeSellHotDTO> getGoodTradeDataLimitSellHot(int limitNum);
 }
