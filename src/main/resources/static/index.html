@@ -43,6 +43,8 @@
 <!--<div id="sellCnt30GetByWpmcChart" style="width: 600px;height:400px;"></div>-->
 <!--<div id="followHeat30GetByWpmcChart" style="width: 600px;height:400px;"></div>-->
 <div id="combinePriceByWpmcChart" style="width: 600px;height:400px;"></div>
+<div id="currenLowestPrice"></div>
+<div id="sellHot"></div>
 
 </body>
 <script type=text/javascript>
@@ -66,6 +68,41 @@
         const toDate = new Date().Format("yyyy-MM-dd");
         const fromDate = new Date(new Date().setMonth(new Date().getMonth() - 1)).Format("yyyy-MM-dd");
 
+        function loadSellHot() {
+            $('#sellHot table').remove();
+            $.ajax({
+                type: "get",
+                url: "/querygoods/getGoodTradeDataLimitSellHot",
+                success: function (data) {
+                    if (data.length == 0) return;
+                    $('#sellHot').append('  <table border="solid"> ' +
+                        '<thead>\n' +
+                        '    <tr>\n' +
+                        '      <th>排序</th>\n' +
+                        '      <th>外观热度</th>\n' +
+                        '      <th>外观通称</th>\n' +
+                        '      <th>外观名称</th>\n' +
+                        '      <th>当日平均价格</th>\n' +
+                        '    </tr>\n' +
+                        '  </thead>' +
+                        '  <tbody>' +
+                        '  </tbody>' +
+                        '</table>')
+                    $('#sellHot table thead').append()
+                    $.each(data, function (k, v){
+                        $('#sellHot table tbody').append('<tr>'
+                            + '<td>'+(k+1) +'</td>'
+                            + '<td>'+v.sellCnt30 +'</td>'
+                            + '<td>'+v.wpmc +'</td>'
+                            + '<td>'+v.info+'</td>'
+                            + '<td>'+v.avgPrice/100 +'</td>'
+                            + '</tr>')
+                    })
+                }
+            })
+        }
+
+        loadSellHot();
 
         $('#toDate').val(toDate)
         $('#fromDate').val(fromDate)
@@ -100,10 +137,15 @@
                         $.each(data, function (k, v){
                             $('#selGenCall').append('<option value="' + v.gfmc + '">' + v.wpqc + '</option>')
                         })
+                        $('#getByWpmc').click();
                     }
                 })
+            }
+        );
 
-
+        $('#selGenCall').change(
+            function () {
+                $('#getByWpmc').click();
             }
         );
 
@@ -188,8 +230,31 @@
                         transfer2MutilChart('combinePriceByWpmcChart', dataInfoArr)
                     }
                 })
+
+                $.ajax({
+                    type: "post",
+                    url: "/querygoods/getLowPriceByGfmc",
+                    dataType:'json',
+                    data: {
+                        gfmc: $('#selGenCall').val()
+                    },
+                    success: function (data) {
+                        if (data.code == 1) {
+                            $('#currenLowestPrice p').remove();
+                            data.data.list.forEach(function(item, index){
+                                $('#currenLowestPrice').append('<p>' + item.single_unit_price/100 + '</p>')
+                            })
+                        }
+                    }
+                })
+
+
             }
         );
+
+        function success_jsonpCallback(data) {
+            console.log(data)
+        }
 
         function templateChart(dataInfoArr){
             let fromColor = '#fff';

@@ -1,6 +1,7 @@
 package com.fan.wanwindow.controller;
 
 import com.fan.wanwindow.dto.GoodTradeDataTendDTO;
+import com.fan.wanwindow.dto.GoodTradeSellHotDTO;
 import com.fan.wanwindow.entity.GoodTradeData;
 import com.fan.wanwindow.entity.id.GoodTradeDataPK;
 import com.fan.wanwindow.entity.projection.GoodTradeDataPrice;
@@ -9,11 +10,9 @@ import com.fan.wanwindow.repository.GoodInfoMcRepository;
 import com.fan.wanwindow.repository.GoodTradeDataRepository;
 import com.fan.wanwindow.repository.GoodTradeDateTendRepository;
 import com.fan.wanwindow.vo.GoodQcAndGfmcVO;
+import com.gao.MainProcess.MainProcess;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -68,10 +67,31 @@ public class QueryGoodsController {
         return byWpmc;
     }
 
+    @PostMapping("/getLowPriceByGfmc")
+    public String getLowPriceByGfmc(String gfmc){
+        return MainProcess.getGoodLowestPrice(null, gfmc);
+    }
+
+
     @PostMapping("/getQcNameByWpmc")
     public List<GoodWpqcAndGfmc> getQcNameByWpmc(String wpmc){
         List<GoodWpqcAndGfmc> qcName = null;
         qcName = goodInfoMcRepository.findAllByWpqcLike(wpmc);
         return qcName;
     }
+
+    @GetMapping("/getGoodTradeDataBySellHot")
+    public List<GoodTradeSellHotDTO> getGoodTradeDataBySellHot() {
+        List<GoodTradeSellHotDTO> bySellHot = null;
+        bySellHot = goodTradeDateTendRepository.getGoodTradeDataBySellHot(100);
+        return bySellHot;
+    }
+
+    @GetMapping("/getGoodTradeDataLimitSellHot")
+    public List<GoodTradeSellHotDTO> getGoodTradeDataLimitSellHot() {
+        List<GoodTradeSellHotDTO> bySellHot = null;
+        bySellHot = goodTradeDateTendRepository.getGoodTradeDataLimitSellHot(10);
+        return bySellHot;
+    }
+
 }
