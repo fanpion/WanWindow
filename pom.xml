@@ -66,7 +66,7 @@
             <artifactId>wanbaoSpiderM</artifactId>
             <version>1.0.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/resources/lib/wanbaoSpiderM-1.0.0.jar</systemPath>
+            <systemPath>${project.basedir}/src/main/resources/lib/wanbaoSpiderM-1.0-SNAPSHOT-jar-with-dependencies.jar</systemPath>
         </dependency>
 
         <dependency>
