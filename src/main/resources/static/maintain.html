@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Maintain</title>
+    <script type="text/javascript" src="./js/jquery.js"></script>
+    <script type="text/javascript" src="./js/echarts.js"></script>
+</head>
+<body>
+<p>每日记录价格:</p>
+<form>
+    <input type = "text" value="" id="outCookie">
+    <input type="button" value="Submit" id="inputPrice">
+    <span id="inputResult"></span>
+</form>
+
+<p>新商品:</p>
+<form>
+    <input type = "text" value="" id="updateIDFrom">
+    <input type="button" value="Submit" id="btnGoodDetail">
+    <span id="reGoodDetail"></span>
+</form>
+<!--<p>getGoodTradeData:</p>-->
+<!--<form>-->
+<!--    <input type = "text" value="3980" name="itemIndex" id="itemIndex">-->
+<!--    <input type = "text" value="2023-08-07" name="dt" id="dt">-->
+<!--    <input type="button" value="Submit" id="getByIndex">-->
+<!--</form>-->
+<!--<div id="getGoodTradeDataChart" style="width: 600px;height:400px;"></div>-->
+
+</body>
+<script type=text/javascript>
+    $(function() {
+
+        $('#inputPrice').click(
+            function () {
+                if ('' == $('#outCookie').val()) return;
+                $.ajax({
+                    type: "post",
+                    url: "/wanbaodaily/getGoodsTrade",
+                    data: {
+                        cookie: $('#outCookie').val(),
+                    },
+                    success: function (data) {
+                        $('#inputResult').html(data);
+                    }
+                })
+            }
+        );
+
+        $('#btnGoodDetail').click(
+            function () {
+                if ('' == $('#updateIDFrom').val()) return;
+                $.ajax({
+                    type: "post",
+                    url: "/wanbaodaily/getGoodDetail",
+                    data: {
+                        updateIDFrom: $('#updateIDFrom').val(),
+                    },
+                    success: function (data) {
+                        $('#reGoodDetail').html(data);
+                    }
+                })
+            }
+        );
+
+    });
+
+</script>
+</html>

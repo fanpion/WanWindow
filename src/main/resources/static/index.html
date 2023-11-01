@@ -2,17 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>WanWindow</title>
     <script type="text/javascript" src="./js/jquery.js"></script>
     <script type="text/javascript" src="./js/echarts.js"></script>
 </head>
 <body>
-<p>每日记录价格:</p>
-<form>
-    <input type = "text" value="" id="outCookie">
-    <input type="button" value="Submit" id="inputPrice">
-    <span id="inputResult"></span>
-</form>
+
 <!--<p>getGoodTradeData:</p>-->
 <!--<form>-->
 <!--    <input type = "text" value="3980" name="itemIndex" id="itemIndex">-->
@@ -106,22 +101,6 @@
 
         $('#toDate').val(toDate)
         $('#fromDate').val(fromDate)
-
-        $('#inputPrice').click(
-            function () {
-                if ('' == $('#outCookie').val()) return;
-                $.ajax({
-                    type: "post",
-                    url: "/wanbaodaily/getGoodsTrade",
-                    data: {
-                        cookie: $('#outCookie').val(),
-                    },
-                    success: function (data) {
-                        $('#inputResult').val(data);
-                    }
-                })
-            }
-        );
 
         $('#btnGetGenCall').click(
             function () {
