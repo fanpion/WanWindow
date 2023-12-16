@@ -7,6 +7,13 @@
     <script type="text/javascript" src="./js/echarts.js"></script>
 </head>
 <body>
+<p>Cookie:</p>
+<form>
+    <input type = "text" value="" id="updateCookie">
+    <input type="button" value="Submit" id="btnUpdateCookie">
+    <span id="reUpdateCookie"></span>
+</form>
+
 <p>每日记录价格:</p>
 <form>
     <input type = "text" value="" id="outCookie">
@@ -31,6 +38,34 @@
 </body>
 <script type=text/javascript>
     $(function() {
+
+        function getCookie() {
+            $.ajax({
+                type: "get",
+                url: "/wanbaodaily/getSysConfigCookie",
+                success: function (data) {
+                    $('#updateCookie').val(data);
+                }
+            })
+        }
+
+        getCookie();
+
+        $('#btnUpdateCookie').click(
+            function () {
+                if ('' == $('#updateCookie').val()) return;
+                $.ajax({
+                    type: "post",
+                    url: "/wanbaodaily/updateSysConfigCookie",
+                    data: {
+                        cookie: $('#updateCookie').val(),
+                    },
+                    success: function (data) {
+                        $('#reUpdateCookie').html(data);
+                    }
+                })
+            }
+        );
 
         $('#inputPrice').click(
             function () {
