@@ -1,5 +1,6 @@
 package com.fan.wanwindow.controller;
 
+import com.fan.wanwindow.annotation.WebLog;
 import com.fan.wanwindow.dto.GoodTradeDataTendDTO;
 import com.fan.wanwindow.dto.GoodTradeSellHotDTO;
 import com.fan.wanwindow.entity.GoodTradeData;
@@ -11,7 +12,6 @@ import com.fan.wanwindow.repository.GoodInfoMcRepository;
 import com.fan.wanwindow.repository.GoodTradeDataRepository;
 import com.fan.wanwindow.repository.GoodTradeDateTendRepository;
 import com.fan.wanwindow.repository.SysConfigRepository;
-import com.fan.wanwindow.vo.GoodQcAndGfmcVO;
 import com.gao.MainProcess.MainProcess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +21,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/querygoods")
+@WebLog(description = "querygoods")
 public class QueryGoodsController {
 
     public static final String CONFIG_KEY_COOKIE = "cookie";

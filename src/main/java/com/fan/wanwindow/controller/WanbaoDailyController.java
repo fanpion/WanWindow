@@ -1,5 +1,6 @@
 package com.fan.wanwindow.controller;
 
+import com.fan.wanwindow.annotation.WebLog;
 import com.fan.wanwindow.entity.SysConfig;
 import com.fan.wanwindow.entity.projection.GoodWpqcAndGfmc;
 import com.fan.wanwindow.repository.GoodInfoMcRepository;
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/wanbaodaily")
+@WebLog(description = "wanbaodaily")
 public class WanbaoDailyController {
     public static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -49,6 +51,7 @@ public class WanbaoDailyController {
         return "updateSysConfigCookie Complete!";
     }
 
+    @WebLog(description = "Get SysConfig Cookie")
     @GetMapping(value = "/getSysConfigCookie")
     public String getSysConfigCookie() {
         Optional<SysConfig> byKey = sysConfigRepository.findById(QueryGoodsController.CONFIG_ID_COOKIE);
