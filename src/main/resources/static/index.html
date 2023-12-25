@@ -18,7 +18,7 @@
 
 <p>通称:</p>
 <div>
-    <input type = "text" value="蓝兔盒子" name="txtGenCall" id="txtGenCall">
+    <input type = "text" value="灵龙" name="txtGenCall" id="txtGenCall">
     <input type="button" value="Submit" id="btnGetGenCall">
     <div>
         <select id="selGenCall"></select>
@@ -220,6 +220,7 @@
                     success: function (data) {
                         if (data.code == 1) {
                             $('#currenLowestPrice p').remove();
+                            $('#currenLowestPrice').append('<p>当前万宝楼最低价:</p>')
                             data.data.list.forEach(function(item, index){
                                 $('#currenLowestPrice').append('<p>' + item.single_unit_price/100 + '</p>')
                             })

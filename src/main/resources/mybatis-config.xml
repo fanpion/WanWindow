@@ -4,12 +4,22 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <!--configuration核心配置文件-->
 <configuration>
-    <environments default="development">
+    <environments default="development_druid">
         <environment id="development">
             <transactionManager type="JDBC"/>
             <dataSource type="POOLED">
                 <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
-                <property name="url" value="jdbc:mysql://1.12.49.42:3306/wanbaolouspider?autoReconnect=true&amp;autoReconnectForPools=true"/>
+                <property name="url" value="jdbc:mysql://1.12.49.42:3306/wanbaolouspider"/>
+                <property name="username" value="root"/>
+                <property name="password" value="GAOmysql0104?"/>
+            </dataSource>
+        </environment>
+
+        <environment id="development_druid">
+            <transactionManager type="JDBC"/>
+            <dataSource type="com.gao.utils.DruidDataSourceFactory">
+                <property name="driverClass" value="com.mysql.cj.jdbc.Driver"/>
+                <property name="jdbcUrl" value="jdbc:mysql://1.12.49.42:3306/wanbaolouspider"/>
                 <property name="username" value="root"/>
                 <property name="password" value="GAOmysql0104?"/>
             </dataSource>
