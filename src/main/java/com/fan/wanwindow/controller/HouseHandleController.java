@@ -1,9 +1,8 @@
 package com.fan.wanwindow.controller;
 
 import com.fan.wanwindow.entity.UserHouse;
-import com.fan.wanwindow.repository.UserHouseRepositoty;
+import com.fan.wanwindow.repository.UserHouseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HouseHandleController {
 
     @Autowired
-    UserHouseRepositoty userHouseRepositoty;
+    UserHouseRepository userHouseRepositoty;
 
     @RequestMapping("/goodSave")
     public void goodSave(UserHouse userHouse) {
