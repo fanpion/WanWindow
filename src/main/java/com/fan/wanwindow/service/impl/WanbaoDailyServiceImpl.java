@@ -33,8 +33,7 @@ public class WanbaoDailyServiceImpl implements WanbaoDailyService {
 
     @Override
     public String GetGoodsTrade(String cookie) {
-        MainProcess.main(new String[]{"2", cookie});
-        return "Request Success";
+        return MainProcess.getTradeUpdate(cookie);
     }
 
     @Override
