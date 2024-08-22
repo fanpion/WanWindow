@@ -7,7 +7,7 @@ import com.fan.wanwindow.entity.GoodTradeData;
 import com.fan.wanwindow.entity.id.GoodTradeDataPK;
 import com.fan.wanwindow.entity.projection.GoodTradeDataPrice;
 import com.fan.wanwindow.entity.projection.GoodWpqcAndGfmc;
-import org.springframework.stereotype.Service;
+import com.fan.wanwindow.entity.projection.GoodSelectPrj;
 
 import java.util.List;
 
@@ -27,4 +27,5 @@ public interface QueryGoodsService {
     public List<GoodWpqcAndGfmc> getQcNameByWpmc(String wpmc);
     public List<GoodTradeSellHotDTO> getGoodTradeDataBySellHot();
     public List<GoodTradeSellHotDTO> getGoodTradeDataLimitSellHot();
+    public List<GoodSelectPrj> getGoodForSelect();
 }

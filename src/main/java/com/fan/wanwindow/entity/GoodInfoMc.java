@@ -35,4 +35,7 @@ public class GoodInfoMc {
 
     @Column(name = "Gfmc")
     private String gfmc;
+
+    @Column(name = "item_index")
+    private String itemIndex;
 }
