@@ -6,6 +6,7 @@ import com.fan.wanwindow.dto.GoodTradeSellHotDTO;
 import com.fan.wanwindow.entity.GoodTradeData;
 import com.fan.wanwindow.entity.SysConfig;
 import com.fan.wanwindow.entity.id.GoodTradeDataPK;
+import com.fan.wanwindow.entity.projection.GoodSelectPrj;
 import com.fan.wanwindow.entity.projection.GoodTradeDataPrice;
 import com.fan.wanwindow.entity.projection.GoodWpqcAndGfmc;
 import com.fan.wanwindow.repository.GoodInfoMcRepository;
@@ -89,5 +90,10 @@ public class QueryGoodsServiceImpl implements QueryGoodsService {
     @Override
     public List<GoodTradeSellHotDTO> getGoodTradeDataLimitSellHot() {
         return goodTradeDateTendRepository.getGoodTradeDataLimitSellHot(10);
+    }
+
+    @Override
+    public List<GoodSelectPrj> getGoodForSelect() {
+        return goodInfoMcRepository.findAllForSelect();
     }
 }
