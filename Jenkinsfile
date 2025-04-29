@@ -11,6 +11,11 @@ pipeline{
                 echo 'run test'
             }
         }
+        stage("build clean"){
+            steps{
+                bat 'mvn clean package'
+            }
+        }
     }
     post{
         always{
