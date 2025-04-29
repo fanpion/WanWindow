@@ -28,8 +28,9 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.*;
+
+import static com.fan.wanwindow.util.EmailSendUtil.sendToMyEmail;
 
 @Aspect
 @Component
@@ -43,6 +44,14 @@ public class WebLogAspect {
     @Autowired
     LogService sysIpReqLog;
 
+    // TODO: if address is in warning list
+    public static List<String> warningList = new ArrayList<>();
+
+    static{
+        warningList.add("广州市");
+        warningList.add("台州市");
+    }
+
     public final static String LOG_START_STRING = "========================================== Start ==========================================";
     public final static String LOG_END_STRING = "==========================================  END  ==========================================";
     public final static String NEW_LINE_STRING = System.lineSeparator();
@@ -53,6 +62,9 @@ public class WebLogAspect {
 
     @Before("webLog()")
     public void doBefore(JoinPoint joinPoint) throws Exception {
+        // email send flag
+        boolean anyMatch = false;
+
         // 开始打印请求日志
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
@@ -64,9 +76,24 @@ public class WebLogAspect {
         String url = request.getRequestURL().toString();
         String des = methodDescription;
         String httpMethod = request.getMethod();
+        Enumeration<String> headerNames = request.getHeaderNames();
+
+        String relIp = null;
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            String headerValue = request.getHeader(headerName);
+            System.out.println(headerName + ": " + headerValue);
+            if ("x-real-ip".equals(headerName)){
+                relIp = headerValue;
+            }
+        }
+
         String className = joinPoint.getSignature().getDeclaringTypeName();
         String methodName = joinPoint.getSignature().getName();
         String url_ip = request.getRemoteAddr();
+        if (null != url_ip && "127.0.0.1".equals(url_ip) && null != relIp) {
+            url_ip = relIp;
+        }
         String url_address = null;
 
         // IP
@@ -94,6 +121,9 @@ public class WebLogAspect {
                 sysIpReq = new SysIpReq(new SysIpReqPK(sysIpReqRes.ip, sysIpReqRes.code,data.continent, data.country, data.zipcode, data.timezone,
                         data.accuracy, data.owner, data.isp, data.source, data.areacode, data.adcode, data.asnumber, data.lat,
                         data.lng, data.redius, data.prov, data.city, data.district, new Date()));
+                String city = data.city;
+                anyMatch = warningList.stream().anyMatch(str -> str.equals(city));
+
             } else{
                 sysIpReq = new SysIpReq(new SysIpReqPK(sysIpReqRes.ip, sysIpReqRes.code, new Date()));
             }
@@ -133,6 +163,7 @@ public class WebLogAspect {
              */
             sysIpReq = new SysIpReq(new SysIpReqPK(url_ip, tenPO.status, new Date(), loc.lat, loc.lng, info.nation, info.province,
                     info.city, info.district, info.adcode, info.nation_code));
+            anyMatch |= warningList.stream().anyMatch(str -> str.equals(result.ad_info.city));
         } else {
             sysIpReq = new SysIpReq(new SysIpReqPK(url_ip, tenPO.status, new Date()));
         }
@@ -153,9 +184,14 @@ public class WebLogAspect {
         // 打印请求相关参数
         log.info(logSb.toString());
 
+        SysRequestLog sysRequestLog = new SysRequestLog(new SysRequestLogPK(url, des, httpMethod, className, methodName, url_ip, url_address, req_params, reqParamsKey, new Date()));
         // TODO: save log into db
-        requestLogService.log(new SysRequestLog(new SysRequestLogPK(url, des, httpMethod, className, methodName, url_ip, url_address, req_params, reqParamsKey, new Date())));
-
+        requestLogService.log(sysRequestLog);
+        if (anyMatch) {
+            String finalUrl_address = url_address;
+            new Thread(()->sendToMyEmail(finalUrl_address + " 访问了!" + sysRequestLog)).start();
+            // sendToMyEmail(url_address + " 访问了!" + sysRequestLog);
+        }
 
         //log.info("Request Args   : {}", String.valueOf(joinPoint.getArgs().toString()));
     }

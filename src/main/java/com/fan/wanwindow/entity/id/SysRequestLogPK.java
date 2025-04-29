@@ -6,6 +6,7 @@ import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -19,6 +20,7 @@ import java.util.Date;
 
 @Embeddable
 @Data
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class SysRequestLogPK implements Serializable {
