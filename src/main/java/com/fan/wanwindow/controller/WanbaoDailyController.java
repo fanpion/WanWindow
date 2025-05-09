@@ -5,6 +5,8 @@ import com.fan.wanwindow.entity.SysConfig;
 import com.fan.wanwindow.entity.projection.GoodWpqcAndGfmc;
 import com.fan.wanwindow.repository.GoodInfoMcRepository;
 import com.fan.wanwindow.repository.SysConfigRepository;
+import com.fan.wanwindow.service.WanbaoDailyService;
+import com.fan.wanwindow.service.impl.QueryGoodsServiceImpl;
 import com.gao.MainProcess.MainProcess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,46 +22,29 @@ import java.util.Optional;
 @RequestMapping("/wanbaodaily")
 @WebLog(description = "wanbaodaily")
 public class WanbaoDailyController {
-    public static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
-    GoodInfoMcRepository goodInfoMcRepository;
-    @Autowired
-    SysConfigRepository sysConfigRepository;
-
+    WanbaoDailyService wanbaoDailyService;
 
     @PostMapping(value = "/getGoodsTrade")
     public String GetGoodsTrade(String cookie){
-        MainProcess.main(new String[]{"2", cookie});
-        return "Request Success";
+        return wanbaoDailyService.GetGoodsTrade(cookie);
     }
 
     @PostMapping(value = "/getGoodDetail")
     public String getGoodDetail(int updateIDFrom) {
-        for (GoodWpqcAndGfmc goodWpqcAndGfmc : goodInfoMcRepository.getGfmcByIDFrom(updateIDFrom)) {
-            MainProcess.getGoodAnyStatus(goodWpqcAndGfmc.getGfmc());
-        }
-        return "getGoodDetail Success";
+        return wanbaoDailyService.getGoodDetail(updateIDFrom);
     }
 
     @PostMapping(value = "/updateSysConfigCookie")
     public String updateSysConfigCookie(String cookie) {
-        SysConfig cookieConf = new SysConfig(
-                QueryGoodsController.CONFIG_ID_COOKIE,
-                QueryGoodsController.CONFIG_KEY_COOKIE, cookie, "Cookie for request target", simpleDateFormat.format(new Date()), null);
-        sysConfigRepository.save(cookieConf);
-        return "updateSysConfigCookie Complete!";
+        return wanbaoDailyService.updateSysConfigCookie(cookie);
     }
 
     @WebLog(description = "Get SysConfig Cookie")
     @GetMapping(value = "/getSysConfigCookie")
     public String getSysConfigCookie() {
-        Optional<SysConfig> byKey = sysConfigRepository.findById(QueryGoodsController.CONFIG_ID_COOKIE);
-        String cookie = null;
-        if (byKey.isPresent()) {
-            cookie = byKey.get().getValue();
-        }
-        return cookie;
+        return wanbaoDailyService.getSysConfigCookie();
     }
 
 }
