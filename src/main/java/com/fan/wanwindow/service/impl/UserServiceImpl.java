@@ -1,6 +1,5 @@
 package com.fan.wanwindow.service.impl;
 
-
 import com.fan.wanwindow.entity.UserInfo;
 import com.fan.wanwindow.repository.UserRepository;
 import com.fan.wanwindow.service.UserService;

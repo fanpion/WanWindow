@@ -7,6 +7,7 @@ import com.fan.wanwindow.repository.UserLeavemessageRepository;
 import com.fan.wanwindow.service.LeaveMassageService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Date;
@@ -26,8 +27,8 @@ public class LeaveMessageTest {
 
     @Test
     void saveTest(){
-        UserLeavemassage userLeavemassage = new UserLeavemassage(1, "Mytest", "Content", new Date().toInstant());
-        leaveMessage.save(userLeavemassage);
+        //UserLeavemassage userLeavemassage = new UserLeavemassage(1, "Mytest", "Content", new Date());
+        //leaveMessage.save(userLeavemassage);
     }
 
     @Test

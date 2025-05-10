@@ -4,22 +4,15 @@ import com.fan.wanwindow.annotation.WebLog;
 import com.fan.wanwindow.dto.GoodTradeDataTendDTO;
 import com.fan.wanwindow.dto.GoodTradeSellHotDTO;
 import com.fan.wanwindow.entity.GoodTradeData;
-import com.fan.wanwindow.entity.SysConfig;
 import com.fan.wanwindow.entity.id.GoodTradeDataPK;
 import com.fan.wanwindow.entity.projection.GoodSelectPrj;
 import com.fan.wanwindow.entity.projection.GoodTradeDataPrice;
 import com.fan.wanwindow.entity.projection.GoodWpqcAndGfmc;
-import com.fan.wanwindow.repository.GoodInfoMcRepository;
-import com.fan.wanwindow.repository.GoodTradeDataRepository;
-import com.fan.wanwindow.repository.GoodTradeDateTendRepository;
-import com.fan.wanwindow.repository.SysConfigRepository;
 import com.fan.wanwindow.service.QueryGoodsService;
-import com.gao.MainProcess.MainProcess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/querygoods")
