@@ -1,6 +1,5 @@
 package com.fan.wanwindow.service.impl;
 
-
 import com.fan.wanwindow.dto.GoodTradeDataTendDTO;
 import com.fan.wanwindow.dto.GoodTradeSellHotDTO;
 import com.fan.wanwindow.entity.GoodTradeData;
