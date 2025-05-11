@@ -9,7 +9,7 @@
             <transactionManager type="JDBC"/>
             <dataSource type="com.gao.utils.DruidDataSourceFactory">
                 <property name="driverClass" value="com.mysql.cj.jdbc.Driver"/>
-                <property name="jdbcUrl" value="'${DATABASE_URL}'"/>
+                <property name="jdbcUrl" value="${DATABASE_URL}"/>
                 <property name="username" value="${DATABASE_USER}"/>
                 <property name="password" value="${DATABASE_PASSWORD}"/>
             </dataSource>
