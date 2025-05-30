@@ -19,6 +19,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import java.io.IOException;
+import java.util.Map;
 
 public class NetworkUtil {
     private static final OkHttpClient client = new OkHttpClient();
@@ -35,8 +36,27 @@ public class NetworkUtil {
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
-            return response.body().string();
+            if (response.body() != null) {
+                return response.body().string();
+            }
         }
+        return url;
+    }
+
+    public static String get(String url, Map<String, String> param) throws IOException {
+        Request.Builder url1 = new Request.Builder().url(url);
+        if (param != null) {
+            for (Map.Entry<String, String> entry : param.entrySet()) {
+                url1.addHeader(entry.getKey(), entry.getValue());
+            }
+        }
+        Request request = url1.build();
+        try (Response response = client.newCall(request).execute()) {
+            if (response.body() != null) {
+                return response.body().string();
+            }
+        }
+        return url;
     }
 
     /**

@@ -99,16 +99,18 @@ public class WebLogAspect {
         // IP
         SysIpReq sysIpReq = null;
         // city level
-        SysIpReqReqCity sysIpReqReqCity = new SysIpReqReqCity(url_ip);
-        String responseC = NetworkUtil.get(sysIpReqReqCity.merge().getFinalUrl());
-        SysIpReqRes sysIpReqResC = JSON.parseObject(responseC, SysIpReqRes.class);
-        System.out.println("City"+responseC);
-        System.out.println("City"+sysIpReqResC);
+//        SysIpReqReqCity sysIpReqReqCity = new SysIpReqReqCity(url_ip);
+//        String responseC = NetworkUtil.get(sysIpReqReqCity.merge().getFinalUrl());
+//        SysIpReqRes sysIpReqResC = JSON.parseObject(responseC, SysIpReqRes.class);
+//        System.out.println("City"+responseC);
+//        System.out.println("City"+sysIpReqResC);
 
 
         // TODO: query IP and Save
         SysIpReqReq sysIpReqReq = new SysIpReqReq(url_ip);
-        String response = NetworkUtil.get(sysIpReqReq.merge().getFinalUrl());
+        HashMap<String, String> header = new HashMap<>();
+        header.put("Referer", "https://qifu.baidu.com/");
+        String response = NetworkUtil.get(sysIpReqReq.merge().getFinalUrl(), header);
         SysIpReqRes sysIpReqRes = JSON.parseObject(response, SysIpReqRes.class);
         System.out.println(response);
         System.out.println(sysIpReqRes);
